@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>職場開運年菜 - 翻出你的好職位</title>
+    <style>
+        :root {
+            --bg-color: #f4ece1; 
+            --accent-red: #c0392b;
+            --text-brown: #5d4037;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: "Microsoft JhengHei", sans-serif;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            color: var(--text-brown);
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        h1 { color: var(--accent-red); font-size: 2.2em; margin-bottom: 10px; }
+        .subtitle { font-size: 1.1em; opacity: 0.9; line-height: 1.6; }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            width: 95%;
+            max-width: 1200px;
+            padding: 20px;
+        }
+
+        .card {
+            perspective: 1000px;
+            height: 250px;
+            cursor: pointer;
+        }
+
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 12px;
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            border: 2px solid #8d6e63;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .card-front {
+            background-color: var(--accent-red);
+            color: #fff;
+        }
+
+        .card-front .dish-name { font-size: 1.6em; font-weight: bold; }
+        .card-front .hint { margin-top: 15px; font-size: 0.85em; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; }
+
+        .card-back {
+            background-color: #ffffff;
+            transform: rotateY(180deg);
+        }
+
+        .job-title {
+            color: var(--accent-red);
+            font-size: 1.25em;
+            font-weight: bold;
+            margin-bottom: 8px;
+            border-bottom: 2px solid #eee;
+            width: 100%;
+            padding-bottom: 5px;
+        }
+
+        .trait { font-size: 0.9em; font-weight: bold; color: #8d6e63; margin-bottom: 10px; }
+        .description { font-size: 0.9em; line-height: 1.5; text-align: justify; }
+
+        footer { margin: 40px 0; }
+        .reset-btn {
+            background: var(--text-brown);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🏮 職場開運年菜：基層出頭天</h1>
+    <p class="subtitle">點擊這道「味」，翻出你的職場好「位」！</p>
+</header>
+
+<div class="grid-container" id="gameGrid"></div>
+
+<footer>
+    <button class="reset-btn" onclick="resetGame()">全部蓋起來</button>
+</footer>
+
+<script>
+    const data = [
+        { dish: "東坡肉", trait: "火候穩定，堅持到底", job: "1. 機台操作工", desc: "需要守著設備精準控溫。您是生產線的靈魂火力，穩定的節奏換來高品質的產出。" },
+        { dish: "金元寶 (水餃)", trait: "封口精美，細心把關", job: "2. 包裝作業員", desc: "手速快且眼力好，確保每一件產品都包裝完美，是決定客戶第一印象的門面大師。" },
+        { dish: "什錦菜", trait: "備料瑣碎，條理清晰", job: "3. 行政/倉管員", desc: "把各類雜項理得清清楚楚。細心處理文件與物料，讓團隊後勤穩如泰山。" },
+        { dish: "長年菜", trait: "苦後回甘，長久穩定", job: "4. 清潔/環務員", desc: "處理最辛苦的工作，換來清爽甘甜的空間。起步雖累，但工作穩定是生活的長久保障。" },
+        { dish: "紅燒獅子頭", trait: "紮實飽滿，給人安全感", job: "5. 保全/安檢員", desc: "經得起日曬雨淋與時間磨練。您用厚實的肩膀守護社區，是大家最踏實的靠山。" },
+        { dish: "團圓湯圓", trait: "圓潤滑溜，應對自如", job: "6. 餐飲服務員", desc: "面對客人的各種需求都能圓融處理。熱情周到的服務，讓大家出門在外也能感到團圓溫馨。" },
+        { dish: "發糕", trait: "結構紮實，體力支撐", job: "7. 物流/搬運人員", desc: "靠著勤勞的汗水與爆發力支撐起城市運轉。每一趟運送都像發糕一樣，越拼越發！" },
+        { dish: "炒年糕", trait: "連結環節，動作敏捷", job: "8. 門市收銀/理貨", desc: "連結商品與客戶的關鍵按鈕。反應快、手腳靈活，是門市運作最核心的黏著劑。" }
+    ];
+
+    function createCards() {
+        const grid = document.getElementById('gameGrid');
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.onclick = function() { this.classList.toggle('flipped'); };
+            card.innerHTML = `
+                <div class="card-inner">
+                    <div class="card-front">
+                        <div class="dish-name">${item.dish}</div>
+                        <div class="hint">點擊開蓋</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="job-title">${item.job}</div>
+                        <div class="trait">${item.trait}</div>
+                        <div class="description">${item.desc}</div>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function resetGame() {
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('flipped'));
+    }
+
+    window.onload = createCards;
+</script>
+
+</body>
+</html>
