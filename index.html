@@ -33,7 +33,7 @@
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
+            gap: 25px;
             width: 95%;
             max-width: 1200px;
             padding: 20px;
@@ -41,7 +41,7 @@
 
         .card {
             perspective: 1000px;
-            height: 250px;
+            height: 350px; /* 調整高度以容納圖片在下方 */
             cursor: pointer;
         }
 
@@ -56,9 +56,7 @@
             border-radius: 12px;
         }
 
-        .card.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
+        .card.flipped .card-inner { transform: rotateY(180deg); }
 
         .card-front, .card-back {
             position: absolute;
@@ -75,67 +73,66 @@
             box-sizing: border-box;
         }
 
-        .card-front {
-            background-color: var(--accent-red);
-            color: #fff;
+        /* 正面：紅色蓋子 */
+        .card-front { background-color: var(--accent-red); color: #fff; }
+        .card-front .dish-name { font-size: 1.8em; font-weight: bold; margin-bottom: 5px; }
+        .card-front .hint { font-size: 0.9em; opacity: 0.9; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 5px; }
+        
+        /* 圖片放置在「點擊開蓋」下面 */
+        .dish-img {
+            width: 150px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 2px solid #fff;
+            background: rgba(255,255,255,0.1); 
         }
 
-        .card-front .dish-name { font-size: 1.6em; font-weight: bold; }
-        .card-front .hint { margin-top: 15px; font-size: 0.85em; background: rgba(0,0,0,0.2); padding: 5px 15px; border-radius: 20px; }
-
-        .card-back {
-            background-color: #ffffff;
-            transform: rotateY(180deg);
-        }
-
+        /* 反面：職位內容 */
+        .card-back { background-color: #ffffff; transform: rotateY(180deg); }
         .job-title {
             color: var(--accent-red);
-            font-size: 1.25em;
+            font-size: 1.3em;
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             border-bottom: 2px solid #eee;
             width: 100%;
             padding-bottom: 5px;
         }
-
-        .trait { font-size: 0.9em; font-weight: bold; color: #8d6e63; margin-bottom: 10px; }
-        .description { font-size: 0.9em; line-height: 1.5; text-align: justify; }
+        .trait { font-size: 0.95em; font-weight: bold; color: #8d6e63; margin-bottom: 12px; line-height: 1.4; }
+        .description { font-size: 0.9em; line-height: 1.6; text-align: justify; }
 
         footer { margin: 40px 0; }
         .reset-btn {
-            background: var(--text-brown);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 1em;
+            background: var(--text-brown); color: white; border: none;
+            padding: 12px 30px; border-radius: 25px; cursor: pointer; font-size: 1em;
         }
+        .reset-btn:hover { background: var(--accent-red); }
     </style>
 </head>
 <body>
 
 <header>
     <h1>🏮 職場開運年菜：基層出頭天</h1>
-    <p class="subtitle">點擊這道「味」，翻出你的職場好「位」！</p>
+    <p class="subtitle">選一道你喜歡的年菜「味」，翻開屬於你的好「位」！</p>
 </header>
 
 <div class="grid-container" id="gameGrid"></div>
 
 <footer>
-    <button class="reset-btn" onclick="resetGame()">全部蓋起來</button>
+    <button class="reset-btn" onclick="resetGame()">重新蓋上年菜</button>
 </footer>
 
 <script>
     const data = [
-        { dish: "東坡肉", trait: "火候穩定，堅持到底", job: "1. 機台操作工", desc: "需要守著設備精準控溫。您是生產線的靈魂火力，穩定的節奏換來高品質的產出。" },
-        { dish: "金元寶 (水餃)", trait: "封口精美，細心把關", job: "2. 包裝作業員", desc: "手速快且眼力好，確保每一件產品都包裝完美，是決定客戶第一印象的門面大師。" },
-        { dish: "什錦菜", trait: "備料瑣碎，條理清晰", job: "3. 行政/倉管員", desc: "把各類雜項理得清清楚楚。細心處理文件與物料，讓團隊後勤穩如泰山。" },
-        { dish: "長年菜", trait: "苦後回甘，長久穩定", job: "4. 清潔/環務員", desc: "處理最辛苦的工作，換來清爽甘甜的空間。起步雖累，但工作穩定是生活的長久保障。" },
-        { dish: "紅燒獅子頭", trait: "紮實飽滿，給人安全感", job: "5. 保全/安檢員", desc: "經得起日曬雨淋與時間磨練。您用厚實的肩膀守護社區，是大家最踏實的靠山。" },
-        { dish: "團圓湯圓", trait: "圓潤滑溜，應對自如", job: "6. 餐飲服務員", desc: "面對客人的各種需求都能圓融處理。熱情周到的服務，讓大家出門在外也能感到團圓溫馨。" },
-        { dish: "發糕", trait: "結構紮實，體力支撐", job: "7. 物流/搬運人員", desc: "靠著勤勞的汗水與爆發力支撐起城市運轉。每一趟運送都像發糕一樣，越拼越發！" },
-        { dish: "炒年糕", trait: "連結環節，動作敏捷", job: "8. 門市收銀/理貨", desc: "連結商品與客戶的關鍵按鈕。反應快、手腳靈活，是門市運作最核心的黏著劑。" }
+        { dish: "東坡肉", img: "pork.jpg", trait: "火候穩定：需要長時間守著鍋爐，維持恆溫。", job: "【機台操作工】", desc: "維持產線穩定，守著設備確保產出，您是工廠運轉最穩定的火力核心。" },
+        { dish: "金元寶", img: "dumpling.jpg", trait: "封口精美：重複性高但需要精準，確保不漏。", job: "【包裝作業員】", desc: "負責產品最後的完整，眼快手準，把好運與品質通通包進去。" },
+        { dish: "什錦菜", img: "veggie.jpg", trait: "備料瑣碎：要把各種菜切絲、分類，細小且繁雜。", job: "【行政助理/倉管員】", desc: "處理瑣碎文件與零散庫存，細心把關雜項，是團隊最強的後勤支援。" },
+        { dish: "發糕", img: "cake.jpg", trait: "結構紮實：靠體力支撐，越發越紮實。", job: "【物流/搬運人員】", desc: "體力與速度的結合，支撐起物流行業的爆發力，每一份勞動都換來實實在在的收穫。" },
+        { dish: "湯圓", img: "soup.jpg", trait: "圓潤滑溜：應對各種突發狀況要圓融。", job: "【餐飲服務員】", desc: "站在第一線面對各種客人，圓滿處理各種要求，讓服務充滿溫暖的團圓味。" },
+        { dish: "紅燒獅子頭", img: "meatball.jpg", trait: "紮實飽滿：需要用手勁反覆摔打才有彈性。", job: "【保全/安檢人員】", desc: "經得起環境磨練，守衛安全，給人踏實的信任感，是社區最穩重的靠山。" },
+        { dish: "長年菜", img: "mustard.jpg", trait: "苦後回甘：起步辛苦但穩定長久。", job: "【清潔/環務人員】", desc: "處理最辛苦的環境清潔，換來清爽回甘的空間，穩定踏實是生活的長久保障。" },
+        { dish: "清蒸魚", img: "fish.jpg", trait: "講求鮮度：必須掌握剛出爐的黃金時間。", job: "【外送員/派遣人員】", desc: "與時間賽跑，確保每一份託付都能及時抵達。靈活準時，為自己換來年年有餘。" }
     ];
 
     function createCards() {
@@ -149,6 +146,7 @@
                     <div class="card-front">
                         <div class="dish-name">${item.dish}</div>
                         <div class="hint">點擊開蓋</div>
+                        <img src="${item.img}" alt="${item.dish}" class="dish-img">
                     </div>
                     <div class="card-back">
                         <div class="job-title">${item.job}</div>
@@ -167,6 +165,5 @@
 
     window.onload = createCards;
 </script>
-
 </body>
 </html>
